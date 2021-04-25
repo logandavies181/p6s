@@ -35,7 +35,7 @@ type ProjectTemplate struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ProjectTemplateSpec   `json:"spec,omitempty"`
+	Spec ProjectTemplateSpec `json:"spec,omitempty"`
 }
 
 //+kubebuilder:object:root=true

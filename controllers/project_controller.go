@@ -98,7 +98,7 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		}
 
 		// TODO: Use a pipe instead of mucking around with files. May need to change from distroless
-		cmd := exec.Command("/kubectl", "create", "-f", tmpfile.Name(), "-n", req.Name) 
+		cmd := exec.Command("/kubectl", "create", "-f", tmpfile.Name(), "-n", req.Name)
 		cmdOutput, err := cmd.CombinedOutput()
 		if err != nil {
 			logger.Error(err, "Problem running kubectl", "Output", cmdOutput)
@@ -106,11 +106,11 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		}
 
 		/*
-		err = os.Remove(tmpfile.Name())
-		if err != nil {
-			logger.Error(err, "Could not delete tmp file")
-			return ctrl.Result{}, err
-		}
+			err = os.Remove(tmpfile.Name())
+			if err != nil {
+				logger.Error(err, "Could not delete tmp file")
+				return ctrl.Result{}, err
+			}
 		*/
 
 		logger.Info("Applied config", "Output", cmdOutput)

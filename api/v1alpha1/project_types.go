@@ -23,7 +23,7 @@ import (
 // ProjectSpec defines the desired state of Project
 type ProjectSpec struct {
 	// We use Project.Metadata.Name to creat the namespace
-	
+
 	// TODO: allow adding metadata here
 }
 
