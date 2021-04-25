@@ -6,4 +6,13 @@ plugins:
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: p6s
 repo: github.com/logandavies181/p6s
+resources:
+- api:
+    crdVersion: v1
+  controller: true
+  domain: logan.kiwi
+  group: p6s
+  kind: Project
+  path: github.com/logandavies181/p6s/api/v1alpha1
+  version: v1alpha1
 version: "3"
