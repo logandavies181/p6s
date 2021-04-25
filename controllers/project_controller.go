@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"io/ioutil"
+	//"os"
 	"os/exec"
 
 	"github.com/go-logr/logr"
@@ -65,6 +66,10 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 			logger.Error(err, "Could not create namespace", "Namespace.Name", name)
 			return ctrl.Result{}, err
 		}
+	} else {
+		// Assume the job is done. TODO: use a status field
+		logger.Info("Namespace already exists. Assuming work is done", "Namespace.Name", name)
+		return ctrl.Result{}, nil
 	}
 
 	// Get yaml from ProjectTemplate. If empty, or not found, do nothing
@@ -74,10 +79,10 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	if err != nil {
 		if errors.IsNotFound(err) {
 			logger.Info("No Template found. Not creating resources")
+		} else {
+			logger.Error(err, "Could not get ProjectTemplate")
+			return ctrl.Result{}, err
 		}
-
-		logger.Error(err, "Could not get ProjectTemplate")
-		return ctrl.Result{}, err
 	} else {
 		// Read the template to get the yaml and blindly pass to kubectl
 		data := pt.Spec.Resources
@@ -93,12 +98,20 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		}
 
 		// TODO: Use a pipe instead of mucking around with files. May need to change from distroless
-		cmd := exec.Command("/kubectl", "create", "-f", tmpfile.Name()) 
-		cmdOutput, err := cmd.Output()
+		cmd := exec.Command("/kubectl", "create", "-f", tmpfile.Name(), "-n", req.Namespace) 
+		cmdOutput, err := cmd.CombinedOutput()
 		if err != nil {
-			logger.Error(err, "Problem running kubectl")
+			logger.Error(err, "Problem running kubectl", "Output", cmdOutput)
 			return ctrl.Result{}, err
 		}
+
+		/*
+		err = os.Remove(tmpfile.Name())
+		if err != nil {
+			logger.Error(err, "Could not delete tmp file")
+			return ctrl.Result{}, err
+		}
+		*/
 
 		logger.Info("Applied config", "Output", cmdOutput)
 	}
