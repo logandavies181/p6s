@@ -39,6 +39,7 @@ type ProjectReconciler struct {
 //+kubebuilder:rbac:groups=p6s.logan.kiwi,resources=projects,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=p6s.logan.kiwi,resources=projects/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=p6s.logan.kiwi,resources=projects/finalizers,verbs=update
+//+kubebuilder:rbac:groups=core,resources=namespaces,verbs=get;list;create
 
 // Reconcile creates a namespace Project.Metadata.Name and resources as per the ProjectTemplate "Default" within the
 // p6s-system namespace
