@@ -1,0 +1,34 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - p6s.logan.kiwi
+  resources:
+  - projects
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - p6s.logan.kiwi
+  resources:
+  - projects/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - p6s.logan.kiwi
+  resources:
+  - projects/status
+  verbs:
+  - get
+  - patch
+  - update
