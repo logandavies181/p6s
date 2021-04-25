@@ -22,8 +22,9 @@ import (
 
 // ProjectSpec defines the desired state of Project
 type ProjectSpec struct {
-	// Name of the Namespace to create. metadata.name is ignored
-	Name string `json:"name"`  // TODO: OpenAPI validation on metadata.name
+	// We use Project.Metadata.Name to creat the namespace
+	
+	// TODO: allow adding metadata here
 }
 
 // ProjectStatus defines the observed state of Project

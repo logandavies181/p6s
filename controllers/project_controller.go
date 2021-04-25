@@ -20,6 +20,8 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -38,19 +40,23 @@ type ProjectReconciler struct {
 //+kubebuilder:rbac:groups=p6s.logan.kiwi,resources=projects/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=p6s.logan.kiwi,resources=projects/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the Project object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.7.2/pkg/reconcile
+// Reconcile creates a namespace Project.Metadata.Name and resources as per the ProjectTemplate "Default" within the
+// p6s-system namespace
 func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = r.Log.WithValues("project", req.NamespacedName)
+	logger := r.Log.WithValues("project", req.NamespacedName)
 
-	// your logic here
+	name := req.Name
+
+	ns := &corev1.Namespace{}
+	err := r.Get(ctx, req.NamespacedName, ns)
+	if err != nil && errors.IsNotFound(err) {
+		logger.Info("Creating namespace", "Namespace.Name", name)
+		err = r.Create(ctx, ns)
+		if err != nil {
+			logger.Error(err, "Could not create namespace", "Namespace.Name", name)
+			return ctrl.Result{}, err
+		}
+	}
 
 	return ctrl.Result{}, nil
 }
@@ -59,5 +65,6 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 func (r *ProjectReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&p6sv1alpha1.Project{}).
+		Owns(&p6sv1alpha1.Project{}).
 		Complete(r)
 }
