@@ -1,0 +1,7 @@
+apiVersion: p6s.logan.kiwi/v1alpha1
+kind: ProjectTemplate
+metadata:
+  name: projecttemplate-sample
+spec:
+  # Add fields here
+  foo: bar

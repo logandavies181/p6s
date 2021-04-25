@@ -15,4 +15,12 @@ resources:
   kind: Project
   path: github.com/logandavies181/p6s/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: logan.kiwi
+  group: p6s
+  kind: ProjectTemplate
+  path: github.com/logandavies181/p6s/api/v1alpha1
+  version: v1alpha1
 version: "3"
