@@ -9,6 +9,10 @@ COPY go.sum go.sum
 # and so that source changes don't invalidate our downloaded layer
 RUN go mod download
 
+## TODO: bind this to image tag version
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+  chmod +x kubectl
+
 # Copy the go source
 COPY main.go main.go
 COPY api/ api/
@@ -22,6 +26,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --from=builder /workspace/manager .
+COPY --from=builder /workspace/kubectl .
+
 USER 65532:65532
 
 ENTRYPOINT ["/manager"]
