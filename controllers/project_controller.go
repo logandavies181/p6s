@@ -98,7 +98,7 @@ func (r *ProjectReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		}
 
 		// TODO: Use a pipe instead of mucking around with files. May need to change from distroless
-		cmd := exec.Command("/kubectl", "create", "-f", tmpfile.Name(), "-n", req.Namespace) 
+		cmd := exec.Command("/kubectl", "create", "-f", tmpfile.Name(), "-n", req.Name) 
 		cmdOutput, err := cmd.CombinedOutput()
 		if err != nil {
 			logger.Error(err, "Problem running kubectl", "Output", cmdOutput)
